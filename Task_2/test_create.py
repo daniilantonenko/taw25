@@ -2,6 +2,7 @@ from Task_2.base_page import BasePage
 from Task_2.locators import MainPageLocators, AdvertisementPageLocators
 from faker import Faker
 import uuid
+import re
 
 def test_creater(browser):
     page = BasePage(browser)
@@ -30,10 +31,17 @@ def test_creater(browser):
   
     # Переходим на страницу объявления
     page.find_element(MainPageLocators.SEARCH_INPUT).send_keys(name)
-    page.find_clickable_element(MainPageLocators.ADVERTISMENT_FIRST).click()
+    page.find_clickable_element(locator=MainPageLocators.get_advertisements_with_name(name=name)).click()
+
+    # Собираем данные
+    advertisement_name = page.find_element(AdvertisementPageLocators.ADVERTISMENT_NAME).text
+    advertisement_price = page.find_element(AdvertisementPageLocators.ADVERTISMENT_PRICE).text
+    numuric_advertisement_price = re.sub(r'\D', '', advertisement_price)
+    advertisement_description = page.find_element(AdvertisementPageLocators.ADVERTISMENT_DESCRIPTION).text
+    advertisement_image = page.find_element(AdvertisementPageLocators.ADVERTISMENT_IMAGE).get_attribute("src")
     
     # Проверяем
-    assert page.find_element(AdvertisementPageLocators.ADVERTISMENT_NAME).text == name
-    assert page.find_element(AdvertisementPageLocators.ADVERTISMENT_PRICE).text == price
-    assert page.find_element(AdvertisementPageLocators.ADVERTISMENT_DESCRIPTION).text == description
-    assert page.find_element(AdvertisementPageLocators.ADVERTISMENT_IMAGE).get_attribute("src") == url
+    assert advertisement_name == name, "Название не совпадает"
+    assert numuric_advertisement_price == price, "Цена не совпадает"
+    assert advertisement_description == description, "Описание не совпадает"
+    assert advertisement_image == url, "Ссылка на картинку не совпадает"

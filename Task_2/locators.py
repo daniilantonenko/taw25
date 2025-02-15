@@ -16,8 +16,11 @@ class MainPageLocators:
     BEFORE_PAGE_BUTTON = (By.XPATH, "//button[text() = 'Предыдущая']")  # Кнопка "Предыдущая"
     NEXT_PAGE_BUTTON = (By.XPATH, "//button[text() = 'Следующая']")  # Кнопка "Следующая"
 
-    ADVERTISMENT_FIRST = (By.XPATH, "(//div[contains(@class, 'chakra-container')]//a)[1]")  # Первое объявление
+    ADVERTISMENTS = (By.XPATH, "//div[contains(@class, 'chakra-container')]//a") # Объявления
 
+    # Объявление с названием
+    def get_advertisements_with_name(name):
+        return By.XPATH, f"//div[contains(@class, 'chakra-container')]//a//h4[text()='{name}']" 
 
 class AdvertisementPageLocators:
     ADVERTISMENT_NAME = (By.CSS_SELECTOR, "header h2.chakra-heading") # Название
