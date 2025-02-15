@@ -30,3 +30,8 @@ class AdvertisementPageLocators:
 
     ADVERTISMENT_BUTTON_ADD_TO_BASKET = (By.CSS_SELECTOR, "div.chakra-container  button.chakra-button") # Кнопка "Добавить в корзину"
     ADVERTISMENT_BUTTON_EDIT = (By.XPATH, "(//div[contains(@class,'chakra-container')]//*[name()='svg'])[1]") # Кнопка "Редактировать"
+
+    ADVERTISMENT_EDIT_NAME = (By.CSS_SELECTOR, "input[name='name']") # Поле "Название"
+    ADVERTISMENT_EDIT_PRICE = (By.CSS_SELECTOR, "input[name='price']") # Поле "Цена"
+    ADVERTISMENT_EDIT_DESCRIPTION = (By.CSS_SELECTOR, "textarea[name='description']") # Поле "Описание"
+    ADVERTISMENT_EDIT_URL_IMAGE = (By.CSS_SELECTOR, "input[name='imageUrl']") # Поле "Ссылка на картинку"
