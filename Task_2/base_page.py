@@ -12,9 +12,9 @@ class BasePage:
 
     def find_clickable_element(self, locator, time=15):  
         return WebDriverWait(self.driver, time).until(EC.element_to_be_clickable(locator))
-
-    def find_game_cards(self, locator):  
-        return self.driver.find_elements(*locator)
+    
+    def is_hidden_element(self, locator, time=15):  
+        return WebDriverWait(self.driver, time).until(EC.invisibility_of_element(locator))
 
     def go_to_site(self):  
         return self.driver.get(self.base_url)
