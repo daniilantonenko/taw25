@@ -3,10 +3,9 @@ from base_page import BasePage
 from locators import MainPageLocators, AdvertisementPageLocators
 import uuid
 import re
-import time
 
 @pytest.fixture(scope="module")
-def create_ad(request):
+def create_ad():
     """Фикстура объявления"""
   
     # Генерируем уникальные данные
@@ -59,6 +58,7 @@ def test_create(browser, create_ad):
     assert advertisement_description == description, "Описание не совпадает"
     assert advertisement_image == url_image, "Ссылка на картинку не совпадает"
 
+
 def test_search(browser, create_ad):
     name, price, description, url_image = create_ad
     page = BasePage(browser)
@@ -73,42 +73,53 @@ def test_search(browser, create_ad):
 
 def test_edit(browser, create_ad):
     name, price, description, url_image = create_ad
-    page = BasePage(browser)
-    page.go_to_site()
-
-    # Ищем созданное объявление
-    page.find_element(MainPageLocators.SEARCH_INPUT).send_keys(name)
-    advertisement = page.find_clickable_element(locator=MainPageLocators.get_advertisements_with_name(name=name))
-    # Проверяем наличие объявления в поиске
-    assert advertisement is not None, "Объявление не найдено"
-
-    # Переходим на страницу объявления
-    advertisement.click()
-
-    # Редактируем объявление
-    page.find_clickable_element(AdvertisementPageLocators.ADVERTISMENT_BUTTON_EDIT).click()
 
     name_new = f"Объявление.{uuid.uuid4().hex[:6]}"
     price_new = "200"
     description_new = "description_new"
     url_image_new = f"https://i.ytimg.com/vi/{uuid.uuid4().hex[:6]}/hqdefault.jpg"
 
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_NAME).clear()
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_PRICE).clear()
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_DESCRIPTION).clear()
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_URL_IMAGE).clear()
+    page = BasePage(browser)
+    page.go_to_site()
 
-    time.sleep(10)
+    # Ищем созданное объявление
+    page.find_element(MainPageLocators.SEARCH_INPUT).send_keys(name)
+    advertisement = page.find_clickable_element(locator=MainPageLocators.get_advertisements_with_name(name=name))
 
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_NAME).send_keys(name_new)
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_PRICE).send_keys(price_new)
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_DESCRIPTION).send_keys(description_new)
-    page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_URL_IMAGE).send_keys(url_image_new)
+    # Проверяем наличие объявления в поиске
+    assert advertisement is not None, "Объявление не найдено"
 
-    time.sleep(10)
+    # Переходим на страницу объявления
+    advertisement.click()
+
+    browser.refresh()
+
+    # Редактируем объявление
+    buttion_edit = page.find_clickable_element(AdvertisementPageLocators.ADVERTISMENT_BUTTON_EDIT)
+    buttion_edit.click()
+
+    name_input = page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_NAME)
+    name_input.clear()
+    name_input.send_keys(name_new)
+
+    price_input = page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_PRICE)
+    price_input.clear()
+    price_input.send_keys(price_new)
+
+    description_input = page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_DESCRIPTION)
+    description_input.clear()
+    description_input.send_keys(description_new)
+
+    url_image_input = page.find_element(AdvertisementPageLocators.ADVERTISMENT_EDIT_URL_IMAGE)
+    url_image_input.clear()
+    url_image_input.send_keys(url_image_new)
+
+
 
     # Сохраняем
     page.find_clickable_element(AdvertisementPageLocators.ADVERTISMENT_BUTTON_EDIT).click()
+
+    browser.refresh()
 
     # Собираем данные
     advertisement_name = page.find_element(AdvertisementPageLocators.ADVERTISMENT_NAME).text
@@ -116,8 +127,6 @@ def test_edit(browser, create_ad):
     numuric_advertisement_price = re.sub(r'\D', '', advertisement_price)
     advertisement_description = page.find_element(AdvertisementPageLocators.ADVERTISMENT_DESCRIPTION).text
     advertisement_image = page.find_element(AdvertisementPageLocators.ADVERTISMENT_IMAGE).get_attribute("src")
-
-    time.sleep(10)
     
     # Проверяем соответствие данных
     assert advertisement_name == name_new, "Название не совпадает"
