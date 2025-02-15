@@ -3,7 +3,7 @@ from Task_2.locators import MainPageLocators, AdvertisementPageLocators
 import uuid
 import re
 
-def test_creater(browser):
+def test_create_search_edit(browser):
     page = BasePage(browser)
     page.go_to_site()
 
@@ -27,9 +27,15 @@ def test_creater(browser):
     page.find_clickable_element(MainPageLocators.CREATE_BUTTON_SAVE).click()
     page.is_hidden_element(MainPageLocators.CREATE_CARD)
   
-    # Переходим на страницу объявления
+    # Ищем созданное объявление
     page.find_element(MainPageLocators.SEARCH_INPUT).send_keys(name)
-    page.find_clickable_element(locator=MainPageLocators.get_advertisements_with_name(name=name)).click()
+    advertisement = page.find_clickable_element(locator=MainPageLocators.get_advertisements_with_name(name="mhfghfgh"))
+
+    # Проверяем наличие объявления в поиске
+    assert advertisement is not None, "Объявление не найдено"
+
+    # Переходим на страницу объявления
+    advertisement.click()
 
     # Собираем данные
     advertisement_name = page.find_element(AdvertisementPageLocators.ADVERTISMENT_NAME).text
@@ -38,7 +44,7 @@ def test_creater(browser):
     advertisement_description = page.find_element(AdvertisementPageLocators.ADVERTISMENT_DESCRIPTION).text
     advertisement_image = page.find_element(AdvertisementPageLocators.ADVERTISMENT_IMAGE).get_attribute("src")
     
-    # Проверяем
+    # Проверяем соответствие данных
     assert advertisement_name == name, "Название не совпадает"
     assert numuric_advertisement_price == price, "Цена не совпадает"
     assert advertisement_description == description, "Описание не совпадает"
