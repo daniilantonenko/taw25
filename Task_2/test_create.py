@@ -1,6 +1,5 @@
 from Task_2.base_page import BasePage
 from Task_2.locators import MainPageLocators, AdvertisementPageLocators
-from faker import Faker
 import uuid
 import re
 
@@ -13,11 +12,10 @@ def test_creater(browser):
     page.find_element(MainPageLocators.CREATE_CARD)
 
     # Генерируем уникальные данные
-    fake = Faker('ru_RU')
     name = f"Объявление.{uuid.uuid4().hex[:6]}"
     price = "100"
     description = "description"
-    url = fake.image_url()
+    url = f"https://i.ytimg.com/vi/{uuid.uuid4().hex[:6]}/hqdefault.jpg"
 
     # Вводим данные
     page.find_element(MainPageLocators.CREATE_NAME).send_keys(name)
